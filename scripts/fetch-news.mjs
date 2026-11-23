@@ -169,4 +169,10 @@ async function main() {
   for (const f of news.failed) console.warn(`could not fetch ${f.source} (${f.tab}): ${f.error}`);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
+// Exit explicitly: feeds that time out can leave sockets open, which would keep Node running forever.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().then(
+    () => process.exit(0),
+    (err) => { console.error(err); process.exit(1); },
+  );
+}
