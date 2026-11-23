@@ -1,0 +1,12 @@
+{
+  "name": "news-desk",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch-news.mjs",
+    "test": "node --test scripts/*.test.mjs"
+  },
+  "dependencies": {
+    "rss-parser": "3.13.0"
+  }
+}

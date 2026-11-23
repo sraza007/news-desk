@@ -1,0 +1,62 @@
+{
+  "tabs": [
+    {
+      "id": "canada",
+      "label": "Canada",
+      "title": "Canadian news",
+      "sources": [
+        { "name": "CBC News", "tag": "National", "url": "https://www.cbc.ca/webfeed/rss/rss-topstories" },
+        { "name": "CBC Canada", "tag": "National", "url": "https://www.cbc.ca/webfeed/rss/rss-canada" },
+        { "name": "Global News", "tag": "National", "url": "https://globalnews.ca/canada/feed/" },
+        { "name": "CBC Edmonton", "tag": "Edmonton", "url": "https://www.cbc.ca/webfeed/rss/rss-canada-edmonton" }
+      ]
+    },
+    {
+      "id": "world",
+      "label": "World",
+      "title": "International news",
+      "sources": [
+        { "name": "BBC News", "url": "https://feeds.bbci.co.uk/news/world/rss.xml" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/xml/rss/all.xml" },
+        { "name": "The Guardian", "url": "https://www.theguardian.com/world/rss" },
+        { "name": "NPR", "url": "https://feeds.npr.org/1004/rss.xml" }
+      ]
+    },
+    {
+      "id": "pakistan",
+      "label": "Pakistan",
+      "title": "Pakistani news",
+      "sources": [
+        { "name": "Dawn", "url": "https://www.dawn.com/feeds/home" },
+        { "name": "Express Tribune", "url": "https://tribune.com.pk/feed/home" },
+        { "name": "Geo News", "url": "https://www.geo.tv/rss/1/1" },
+        { "name": "ARY News", "url": "https://arynews.tv/feed/" }
+      ]
+    },
+    {
+      "id": "sports",
+      "label": "NA Sports",
+      "title": "Canadian & American sports",
+      "sources": [
+        { "name": "ESPN NHL", "tag": "NHL", "url": "https://www.espn.com/espn/rss/nhl/news" },
+        { "name": "ESPN NBA", "tag": "NBA", "url": "https://www.espn.com/espn/rss/nba/news" },
+        { "name": "ESPN NFL", "tag": "NFL", "url": "https://www.espn.com/espn/rss/nfl/news" },
+        { "name": "ESPN MLB", "tag": "MLB", "url": "https://www.espn.com/espn/rss/mlb/news" },
+        { "name": "CBC Sports", "tag": "Canadian", "url": "https://www.cbc.ca/webfeed/rss/rss-sports" }
+      ]
+    },
+    {
+      "id": "cricket-tennis",
+      "label": "Cricket & Tennis",
+      "title": "International cricket & tennis",
+      "sources": [
+        { "name": "ESPNcricinfo", "tag": "Cricket", "url": "https://www.espncricinfo.com/rss/content/story/feeds/0.xml" },
+        { "name": "BBC Sport", "tag": "Cricket", "url": "https://feeds.bbci.co.uk/sport/cricket/rss.xml" },
+        { "name": "The Guardian", "tag": "Cricket", "url": "https://www.theguardian.com/sport/cricket/rss" },
+        { "name": "BBC Sport", "tag": "Tennis", "url": "https://feeds.bbci.co.uk/sport/tennis/rss.xml" },
+        { "name": "The Guardian", "tag": "Tennis", "url": "https://www.theguardian.com/sport/tennis/rss" },
+        { "name": "ESPN", "tag": "Tennis", "url": "https://www.espn.com/espn/rss/tennis/news" }
+      ]
+    }
+  ]
+}
