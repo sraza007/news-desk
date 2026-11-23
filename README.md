@@ -2,9 +2,9 @@
 
 A personal news page with five tabs: Canada, World, Pakistan, NA Sports, and Cricket & Tennis.
 
-- A GitHub Action pulls headlines from public RSS feeds every 30 minutes and publishes the site to GitHub Pages.
-- The **Refresh** button pulls the latest headlines right then, straight from the feeds (through free relay services). If a source can't be reached, its saved stories stay on screen.
-- If the saved copy is more than 90 minutes old, a tab refreshes itself the first time you open it.
+- A GitHub Action pulls headlines from public RSS feeds every morning (ready by about 5:30 AM Alberta time) and publishes the site to GitHub Pages.
+- The **Refresh** button pulls the latest headlines whenever you want, straight from the feeds (through free relay services). If a source can't be reached, its saved stories stay on screen.
+- The page never refreshes on its own, except for a tab that has no stories at all.
 
 ## Put it on GitHub (about 10 minutes, all in the browser)
 
@@ -29,7 +29,8 @@ Add a `"tag"` (like `"NHL"` or `"Cricket"`) and the tab shows filter buttons for
 ## Things to know
 
 - **Forcing an update on GitHub:** Actions tab → Update news and publish → Run workflow.
-- **GitHub schedules run a bit late** sometimes (5 to 15 minutes isn't unusual). The Refresh button covers that.
+- **Changing the morning time:** edit the two `cron` lines in `.github/workflows/update-news.yml`. They're in UTC; Alberta is UTC-7 in winter and UTC-6 in summer.
+- **GitHub schedules run a bit late** sometimes (5 to 30 minutes isn't unusual). That's why there are two morning runs.
 - **GitHub pauses scheduled jobs after 60 days without any commits** to the repo. If headlines stop updating, edit any file (or click "Enable workflow" on the Actions tab) to wake it up.
 - **Some news sites block GitHub's servers.** When a feed fails during an update, the site keeps that source's previous stories, and Refresh in your browser usually still gets through. Failures are listed in the Action's log.
 - **Live refresh uses free services** (rss2json.com, then cors.lol). They're rate-limited, which is fine for personal use. If one shuts down, change the `RELAYS` list at the top of `app.js`.

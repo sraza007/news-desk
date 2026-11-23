@@ -8,7 +8,6 @@ const RELAYS = [
   { name: 'cors.lol', url: (u) => `https://api.cors.lol/?url=${encodeURIComponent(u)}`, parse: parseXml },
 ];
 const RELAY_TIMEOUT_MS = 12000;
-const AUTO_LIVE_AFTER_MIN = 90; // saved copy older than this? fetch live on first view
 const MAX_PER_TAB = 60;
 
 const state = {
@@ -230,7 +229,10 @@ function renderStatus(tab) {
     if (live.failed.length) parts.push(el('span', { class: 'warn' }, ` · couldn't reach ${live.failed.join(', ')} (showing saved stories)`));
     status.replaceChildren(...parts);
   } else if (state.saved?.generatedAt) {
-    const parts = [el('span', { class: 'dot' }), `Saved copy · updated ${timeAgo(state.saved.generatedAt)}`];
+    const at = new Date(state.saved.generatedAt);
+    const sameDay = at.toDateString() === new Date().toDateString();
+    const when = at.toLocaleString(undefined, sameDay ? { hour: 'numeric', minute: '2-digit' } : { weekday: 'short', hour: 'numeric', minute: '2-digit' });
+    const parts = [el('span', { class: 'dot' }), `Morning edition · updated ${sameDay ? 'today ' : ''}${when} (${timeAgo(state.saved.generatedAt)})`];
     if (state.liveError === tab.id) parts.push(el('span', { class: 'warn' }, ' · live refresh failed, try again shortly'));
     status.replaceChildren(...parts);
   } else {
@@ -285,9 +287,9 @@ function selectTab() {
   render();
   window.scrollTo({ top: 0 });
 
-  // Pull live automatically the first time a tab is opened if the saved copy is empty or stale.
-  const ageMin = state.saved?.generatedAt ? (Date.now() - new Date(state.saved.generatedAt)) / 60000 : Infinity;
-  if (!state.autoTried.has(tab.id) && (!currentItems(tab.id).length || ageMin > AUTO_LIVE_AFTER_MIN)) {
+  // The saved copy is the morning edition; Refresh is manual. Only pull live on our own
+  // if this tab has no saved stories at all.
+  if (!state.autoTried.has(tab.id) && !currentItems(tab.id).length) {
     state.autoTried.add(tab.id);
     refreshTab(tab).then(render);
     render(); // show skeletons while busy
