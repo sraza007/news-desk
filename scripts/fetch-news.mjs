@@ -9,8 +9,11 @@ export const MAX_PER_SOURCE = 15;
 export const MAX_PER_TAB = 60;
 
 const parser = new Parser({
-  timeout: 20000,
-  headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsDesk/1.0; +https://github.com)' },
+  timeout: 15000,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36',
+    Accept: 'application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
+  },
   customFields: {
     item: [
       ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
@@ -81,9 +84,44 @@ export function mergeItems(items, max = MAX_PER_TAB) {
     .slice(0, max);
 }
 
+/** Map one rss2json item onto the rss-parser shape so normalizeItem can handle it. */
+export function fromRss2Json(it) {
+  const enc = it.enclosure || {};
+  const encIsImage = /image/.test(enc.type || '') || /\.(jpe?g|png|webp|gif)(\?|$)/i.test(enc.link || '');
+  const image = it.thumbnail || (encIsImage ? enc.link : null);
+  return {
+    title: it.title,
+    link: it.link,
+    // rss2json gives "2026-11-23 14:11:37" in UTC
+    isoDate: it.pubDate ? it.pubDate.replace(' ', 'T') + 'Z' : undefined,
+    content: it.description || it.content,
+    enclosure: image ? { url: image, type: 'image' } : undefined,
+  };
+}
+
+// Some sites (CBC, ESPN) block GitHub's servers. For those, go through rss2json instead.
+async function fetchViaRss2Json(source) {
+  const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`, {
+    signal: AbortSignal.timeout(20000),
+  });
+  const data = await res.json();
+  if (data.status !== 'ok') throw new Error(data.message || 'rss2json error');
+  return data.items.map((it) => normalizeItem(fromRss2Json(it), source));
+}
+
 async function fetchSource(source) {
-  const feed = await parser.parseURL(source.url);
-  return feed.items.slice(0, MAX_PER_SOURCE).map((it) => normalizeItem(it, source));
+  try {
+    const feed = await parser.parseURL(source.url);
+    const items = feed.items.slice(0, MAX_PER_SOURCE).map((it) => normalizeItem(it, source)).filter(Boolean);
+    if (items.length) return items;
+    throw new Error('feed had no items');
+  } catch (direct) {
+    try {
+      return await fetchViaRss2Json(source);
+    } catch (relay) {
+      throw new Error(`direct: ${direct.message}; relay: ${relay.message}`);
+    }
+  }
 }
 
 async function loadPrevious(url) {

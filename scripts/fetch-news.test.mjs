@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeItem, mergeItems, buildNews, stripHtml } from './fetch-news.mjs';
+import { normalizeItem, mergeItems, buildNews, stripHtml, fromRss2Json } from './fetch-news.mjs';
 
 const src = { name: 'Dawn', url: 'https://dawn.example/feed', tag: 'Cricket' };
 
@@ -55,6 +55,16 @@ test('buildNews keeps the previous items for a source that fails', async () => {
   assert.deepEqual(news.tabs.pk.items.map((i) => i.title), ['Fresh Geo story', 'Old Dawn story']);
   assert.equal(news.failed.length, 1);
   assert.equal(news.failed[0].source, 'Dawn');
+});
+
+test('fromRss2Json items normalize with UTC date and thumbnail', () => {
+  const it = normalizeItem(
+    fromRss2Json({ title: 'Larkin trade graded', link: 'https://espn.example/1', pubDate: '2026-11-23 04:48:39', thumbnail: 'https://img.example/t.jpg', description: '<p>Who won?</p>', enclosure: {} }),
+    src,
+  );
+  assert.equal(it.date, '2026-11-23T04:48:39.000Z');
+  assert.equal(it.image, 'https://img.example/t.jpg');
+  assert.equal(it.summary, 'Who won?');
 });
 
 test('stripHtml decodes common entities', () => {
