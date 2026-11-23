@@ -4,7 +4,12 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "*/30 * * * *"   # every 30 minutes (GitHub may run it a few minutes late)
+    # Morning edition for Alberta. GitHub schedules are in UTC and Alberta shifts
+    # between MST (UTC-7) and MDT (UTC-6), so run twice an hour apart:
+    #   winter: 4:17 and 5:17 AM   summer: 5:17 and 6:17 AM
+    # (Odd minutes on purpose: GitHub delays jobs scheduled on the hour.)
+    - cron: "17 11 * * *"
+    - cron: "17 12 * * *"
   workflow_dispatch:          # adds a "Run workflow" button on the Actions tab
 
 permissions:
